@@ -1,0 +1,51 @@
+# Workflow name - appears in the Actions tab of GitHub repository
+name: GitHub Actions Demo
+
+# Dynamic run name - shows who triggered the workflow
+run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
+
+# Trigger configuration - when should this workflow run?
+# 'push' means it runs every time code is pushed to the repository
+on: [push]
+
+# Jobs define the work to be done
+# A workflow can have multiple jobs that run in parallel by default
+jobs:
+  # Job ID - you can name this anything
+  Explore-GitHub-Actions:
+    # Runner - the virtual machine environment where the job runs
+    # Options: ubuntu-latest, windows-latest, macos-latest
+    runs-on: ubuntu-latest
+
+    # Steps are individual tasks that run sequentially within a job
+    steps:
+      # Step 1: Display trigger information
+      - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
+
+      # Step 2: Display runner OS information
+      - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
+
+      # Step 3: Display branch and repository information
+      - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
+
+      # Step 4: Check out repository code
+      # This uses a pre-built action from GitHub
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      # Step 5: Confirm repository was cloned
+      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
+
+      # Step 6: Ready to test code
+      - run: echo "🖥️ The workflow is now ready to test your code on the runner."
+
+      # Step 7: List files in the repository
+      - name: List files in the repository
+        run: |
+          ls ${{ github.workspace }}
+          echo "---"
+          echo "Current directory: $(pwd)"
+          echo "Files count: $(ls -1 | wc -l)"
+
+      # Step 8: Display job status
+      - run: echo "🍏 This job's status is ${{ job.status }}."
