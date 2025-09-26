@@ -1,0 +1,73 @@
+name: Manual Trigger Demo
+run-name: Manual run by ${{ github.actor }} - ${{ inputs.environment }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment environment'
+        required: true
+        default: 'development'
+        type: choice
+        options:
+          - development
+          - staging
+          - production
+
+      message:
+        description: 'Custom message'
+        required: false
+        default: 'Running manual workflow'
+        type: string
+
+      enable_debug:
+        description: 'Enable debug logging'
+        required: false
+        default: false
+        type: boolean
+
+jobs:
+  manual-job:
+    name: Manual Trigger Job
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Display input parameters
+        run: |
+          echo "🎯 Environment: ${{ inputs.environment }}"
+          echo "💬 Message: ${{ inputs.message }}"
+          echo "🐛 Debug Mode: ${{ inputs.enable_debug }}"
+          echo "👤 Triggered by: ${{ github.actor }}"
+          echo "⏰ Time: $(date)"
+
+      - name: Environment-specific action
+        run: |
+          case "${{ inputs.environment }}" in
+            development)
+              echo "🔧 Running in DEVELOPMENT mode"
+              echo "Installing dev dependencies..."
+              ;;
+            staging)
+              echo "🎪 Running in STAGING mode"
+              echo "Running integration tests..."
+              ;;
+            production)
+              echo "🚀 Running in PRODUCTION mode"
+              echo "Deploying to production servers..."
+              ;;
+          esac
+
+      - name: Debug information
+        if: inputs.enable_debug == true
+        run: |
+          echo "=== DEBUG MODE ENABLED ==="
+          echo "Repository: ${{ github.repository }}"
+          echo "Ref: ${{ github.ref }}"
+          echo "SHA: ${{ github.sha }}"
+          echo "Workflow: ${{ github.workflow }}"
+          echo "Run ID: ${{ github.run_id }}"
+          echo "Run Number: ${{ github.run_number }}"
+          echo "==========================="
